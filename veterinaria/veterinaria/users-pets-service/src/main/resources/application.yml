@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/db_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:_odmon5Am}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:ClaveSecretaSuperSeguraParaJWTClinicaVeterinaria2026!}
+    expiration: ${JWT_EXPIRATION:86400000}
+  internal-api-key: ${INTERNAL_API_KEY:clave-interna-secreta-2026}
+  # Configuración para la semilla del administrador
+  admin:
+    nombre: ${ADMIN_NOMBRE:Administrador}
+    email: ${ADMIN_EMAIL:admin@veterinaria.com}
+    password: ${ADMIN_PASSWORD:admin123}
