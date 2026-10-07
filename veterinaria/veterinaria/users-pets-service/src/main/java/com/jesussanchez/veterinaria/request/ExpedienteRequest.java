@@ -16,4 +16,36 @@ public class ExpedienteRequest {
     private String tratamiento;
 
     private Double pesoKg;
+
+    public Long getCitaId() {
+        return citaId;
+    }
+
+    public void setCitaId(Long citaId) {
+        this.citaId = citaId;
+    }
+
+    public String getDiagnostico() {
+        return diagnostico;
+    }
+
+    public void setDiagnostico(String diagnostico) {
+        this.diagnostico = diagnostico;
+    }
+
+    public String getTratamiento() {
+        return tratamiento;
+    }
+
+    public void setTratamiento(String tratamiento) {
+        this.tratamiento = tratamiento;
+    }
+
+    public Double getPesoKg() {
+        return pesoKg;
+    }
+
+    public void setPesoKg(Double pesoKg) {
+        this.pesoKg = pesoKg;
+    }
 }

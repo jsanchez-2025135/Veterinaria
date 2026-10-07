@@ -1,10 +1,8 @@
 package com.jesussanchez.veterinaria.response;
 
 import com.jesussanchez.veterinaria.entity.ExpedienteClinico;
-import lombok.Data;
 import java.time.LocalDateTime;
 
-@Data
 public class ExpedienteResponse {
     private Long id;
     private Long citaId;
@@ -22,5 +20,53 @@ public class ExpedienteResponse {
         response.setPesoKg(expediente.getPesoKg());
         response.setFechaRegistro(expediente.getFechaRegistro());
         return response;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getCitaId() {
+        return citaId;
+    }
+
+    public void setCitaId(Long citaId) {
+        this.citaId = citaId;
+    }
+
+    public String getDiagnostico() {
+        return diagnostico;
+    }
+
+    public void setDiagnostico(String diagnostico) {
+        this.diagnostico = diagnostico;
+    }
+
+    public String getTratamiento() {
+        return tratamiento;
+    }
+
+    public void setTratamiento(String tratamiento) {
+        this.tratamiento = tratamiento;
+    }
+
+    public Double getPesoKg() {
+        return pesoKg;
+    }
+
+    public void setPesoKg(Double pesoKg) {
+        this.pesoKg = pesoKg;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 }

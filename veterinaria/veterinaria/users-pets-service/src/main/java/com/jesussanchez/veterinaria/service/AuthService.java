@@ -1,5 +1,6 @@
 package com.jesussanchez.veterinaria.service;
 
+import com.jesussanchez.veterinaria.entity.Rol;
 import com.jesussanchez.veterinaria.entity.Usuario;
 import com.jesussanchez.veterinaria.exception.ApiException;
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
@@ -7,13 +8,11 @@ import com.jesussanchez.veterinaria.request.LoginRequest;
 import com.jesussanchez.veterinaria.request.RegisterRequest;
 import com.jesussanchez.veterinaria.response.AuthResponse;
 import com.jesussanchez.veterinaria.security.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
@@ -31,13 +30,11 @@ public class AuthService {
             throw new ApiException(HttpStatus.BAD_REQUEST, "El email ya se encuentra registrado");
         }
 
-        Usuario usuario = Usuario.builder()
-                .nombre(request.getNombre())
-                .telefono(request.getTelefono())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .rol(request.getRol())
-                .build();
+        Usuario usuario = new Usuario();
+        usuario.setNombre(request.getNombre());
+        usuario.setEmail(request.getEmail());
+        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setRol(Rol.CLIENTE); // O el rol que corresponda según tu lógica
 
         usuarioRepository.save(usuario);
 

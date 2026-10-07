@@ -7,7 +7,6 @@ import com.jesussanchez.veterinaria.exception.ApiException;
 import com.jesussanchez.veterinaria.repository.CitaRepository;
 import com.jesussanchez.veterinaria.repository.MascotaRepository;
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +15,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CitaService {
 
     private final CitaRepository citaRepository;
     private final MascotaRepository mascotaRepository;
     private final UsuarioRepository usuarioRepository;
+
+    public CitaService(CitaRepository citaRepository, MascotaRepository mascotaRepository, UsuarioRepository usuarioRepository) {
+        this.citaRepository = citaRepository;
+        this.mascotaRepository = mascotaRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Transactional
     public CitaMedica agendarCita(Long mascotaId, Long veterinarioId, LocalDateTime fechaHora, String motivo, String emailClienteActual) {
@@ -35,18 +39,18 @@ public class CitaService {
             LocalDateTime finExistente = inicioExistente.plusMinutes(30);
 
             if (inicioNueva.isBefore(finExistente) && finNueva.isAfter(inicioExistente)) {
-                throw new ApiException("El veterinario ya cuenta con una cita en ese rango de horario.", HttpStatus.BAD_REQUEST);
+                throw new ApiException(HttpStatus.BAD_REQUEST, "El veterinario ya cuenta con una cita en ese rango de horario.");
             }
         }
 
         Mascota mascota = mascotaRepository.findById(mascotaId)
-                .orElseThrow(() -> new ApiException("Mascota no encontrada", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Mascota no encontrada"));
 
         Usuario clienteActual = usuarioRepository.findByEmail(emailClienteActual)
-                .orElseThrow(() -> new ApiException("Usuario no encontrado", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
         if (clienteActual.getRol().name().equals("CLIENTE") && !mascota.getCliente().getId().equals(clienteActual.getId())) {
-            throw new ApiException("No puedes agendar citas para mascotas que no te pertenecen.", HttpStatus.FORBIDDEN);
+            throw new ApiException(HttpStatus.FORBIDDEN, "No puedes agendar citas para mascotas que no te pertenecen.");
         }
 
         // 2. Límite de Citas Activas: Máximo 2 citas PENDIENTES el mismo día por CLIENTE
@@ -57,11 +61,11 @@ public class CitaService {
                 mascota.getCliente().getId(), CitaMedica.EstadoCita.PENDIENTE, inicioDia, finDia);
 
         if (citasDelDiaCliente.size() >= 2) {
-            throw new ApiException("El cliente ya cuenta con el límite de 2 citas pendientes para el mismo día.", HttpStatus.BAD_REQUEST);
+            throw new ApiException(HttpStatus.BAD_REQUEST, "El cliente ya cuenta con el límite de 2 citas pendientes para el mismo día.");
         }
 
         Usuario veterinario = usuarioRepository.findById(veterinarioId)
-                .orElseThrow(() -> new ApiException("Veterinario no encontrado", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Veterinario no encontrado"));
 
         CitaMedica nuevaCita = new CitaMedica();
         nuevaCita.setMascota(mascota);
@@ -76,12 +80,12 @@ public class CitaService {
     @Transactional
     public void cancelarCita(Long citaId, String emailUsuario) {
         CitaMedica cita = citaRepository.findById(citaId)
-                .orElseThrow(() -> new ApiException("Cita no encontrada", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Cita no encontrada"));
 
         // 3. Cancelación con Anticipación: Faltan más de 2 horas
         LocalDateTime ahora = LocalDateTime.now();
         if (ahora.plusHours(2).isAfter(cita.getFechaHora())) {
-            throw new ApiException("La cita solo puede ser cancelada con al menos 2 horas de anticipación.", HttpStatus.BAD_REQUEST);
+            throw new ApiException(HttpStatus.BAD_REQUEST, "La cita solo puede ser cancelada con al menos 2 horas de anticipación.");
         }
 
         cita.setEstado(CitaMedica.EstadoCita.CANCELADA);

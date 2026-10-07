@@ -1,5 +1,6 @@
 package com.jesussanchez.veterinaria.service;
 
+import com.jesussanchez.veterinaria.entity.Especie;
 import com.jesussanchez.veterinaria.entity.Mascota;
 import com.jesussanchez.veterinaria.entity.Usuario;
 import com.jesussanchez.veterinaria.exception.ApiException;
@@ -7,7 +8,6 @@ import com.jesussanchez.veterinaria.repository.MascotaRepository;
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
 import com.jesussanchez.veterinaria.request.MascotaRequest;
 import com.jesussanchez.veterinaria.response.MascotaResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class MascotaService {
 
     private final MascotaRepository mascotaRepository;
     private final UsuarioRepository usuarioRepository;
 
+    // Constructor manual para inyección de dependencias
     public MascotaService(MascotaRepository mascotaRepository, UsuarioRepository usuarioRepository) {
         this.mascotaRepository = mascotaRepository;
         this.usuarioRepository = usuarioRepository;
@@ -46,13 +46,18 @@ public class MascotaService {
                     .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
         }
 
-        Mascota mascota = Mascota.builder()
-                .nombre(request.getNombre())
-                .especie(request.getEspecie())
-                .raza(request.getRaza())
-                .edad(request.getEdad())
-                .cliente(cliente)
-                .build();
+        // Creamos la mascota de forma manual (sin usar .builder())
+        Mascota mascota = new Mascota();
+        mascota.setNombre(request.getNombre());
+
+        // Si request.getEspecie() es String, lo convertimos a Enum. Si es Especie, quita el valueOf().
+        if (request.getEspecie() != null) {
+            mascota.setEspecie(request.getEspecie());
+        }
+
+        mascota.setRaza(request.getRaza());
+        mascota.setEdad(request.getEdad());
+        mascota.setCliente(cliente);
 
         Mascota guardada = mascotaRepository.save(mascota);
         return mapearAResponse(guardada);
@@ -65,14 +70,26 @@ public class MascotaService {
     }
 
     private MascotaResponse mapearAResponse(Mascota mascota) {
-        return MascotaResponse.builder()
-                .id(mascota.getId())
-                .nombre(mascota.getNombre())
-                .especie(mascota.getEspecie())
-                .raza(mascota.getRaza())
-                .edad(mascota.getEdad())
-                .clienteId(mascota.getCliente().getId())
-                .nombreCliente(mascota.getCliente().getNombre())
-                .build();
+        // Mapeo manual hacia el Response (sin usar .builder())
+        MascotaResponse response = new MascotaResponse();
+        response.setId(mascota.getId());
+        response.setNombre(mascota.getNombre());
+
+        // Aquí corregimos el .name() con paréntesis y validación de nulos
+        if (mascota.getEspecie() != null) {
+            response.setEspecie(mascota.getEspecie().name());
+        }
+
+        response.setRaza(mascota.getRaza());
+        response.setEdad(mascota.getEdad());
+
+        if (mascota.getCliente() != null) {
+            response.setClienteId(mascota.getCliente().getId());
+            response.setNombreCliente(mascota.getCliente().getNombre());
+        }
+
+        return response;
     }
+
+
 }

@@ -1,8 +1,6 @@
 package com.jesussanchez.veterinaria.security;
 
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,11 +22,15 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
     private final UsuarioRepository usuarioRepository;
+    private final JwtService jwtService; // Inyectamos JwtService en lugar del filtro directamente
+
+    public SecurityConfig(UsuarioRepository usuarioRepository, JwtService jwtService) {
+        this.usuarioRepository = usuarioRepository;
+        this.jwtService = jwtService;
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -43,6 +45,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Instanciamos el filtro manualmente aquí para romper el ciclo de dependencias circulares
+        JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(jwtService, userDetailsService());
+
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth

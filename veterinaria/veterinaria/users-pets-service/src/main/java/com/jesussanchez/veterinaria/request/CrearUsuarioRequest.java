@@ -1,12 +1,35 @@
 package com.jesussanchez.veterinaria.request;
 
-import com.jesussanchez.veterinaria.entity.Rol;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-public record CrearUsuarioRequest(
-        @NotBlank(message = "El nombre es obligatorio") @Size(max = 100) String nombre,
-        @Size(max = 20) String telefono,
-        @NotBlank(message = "El email es obligatorio") @Email(message = "Email inválido") @Size(max = 150) String email,
-        @NotBlank(message = "La contraseña es obligatoria") @Size(min = 8, max = 72, message = "La contraseña debe tener entre 8 y 72 caracteres") String password,
-        @NotNull(message = "El rol es obligatorio") Rol rol
-) {}
+public class CrearUsuarioRequest {
+    @NotBlank(message = "El nombre es obligatorio")
+    private String nombre;
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Debe ser un email válido")
+    private String email;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    private String password;
+
+    private String telefono;
+    private String rol;
+
+    // Getters y Setters
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
+}

@@ -5,7 +5,6 @@ import com.jesussanchez.veterinaria.entity.ExpedienteClinico;
 import com.jesussanchez.veterinaria.exception.ApiException;
 import com.jesussanchez.veterinaria.repository.CitaRepository;
 import com.jesussanchez.veterinaria.repository.ExpedienteRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +13,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ExpedienteService {
 
     private final ExpedienteRepository expedienteRepository;
     private final CitaRepository citaRepository;
 
+    public ExpedienteService(ExpedienteRepository expedienteRepository, CitaRepository citaRepository) {
+        this.expedienteRepository = expedienteRepository;
+        this.citaRepository = citaRepository;
+    }
+
     @Transactional
     public ExpedienteClinico registrarExpediente(Long citaId, String diagnostico, String tratamiento, Double pesoKg) {
         CitaMedica cita = citaRepository.findById(citaId)
-                .orElseThrow(() -> new ApiException("Cita médica no encontrada", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Cita médica no encontrada"));
 
         if (cita.getEstado() == CitaMedica.EstadoCita.CANCELADA) {
-            throw new ApiException("No se puede registrar un expediente para una cita cancelada", HttpStatus.BAD_REQUEST);
+            throw new ApiException(HttpStatus.BAD_REQUEST, "No se puede registrar un expediente para una cita cancelada");
         }
 
         // Cambiar el estado de la cita a COMPLETADA
@@ -46,4 +49,6 @@ public class ExpedienteService {
     public List<ExpedienteClinico> obtenerHistorialPorMascota(Long mascotaId) {
         return expedienteRepository.findByCitaMascotaId(mascotaId);
     }
+
+
 }

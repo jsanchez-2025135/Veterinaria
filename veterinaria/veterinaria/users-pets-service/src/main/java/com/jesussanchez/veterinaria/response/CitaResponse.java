@@ -27,4 +27,68 @@ public class CitaResponse {
         response.setEstado(cita.getEstado().name());
         return response;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getMascotaId() {
+        return mascotaId;
+    }
+
+    public void setMascotaId(Long mascotaId) {
+        this.mascotaId = mascotaId;
+    }
+
+    public String getNombreMascota() {
+        return nombreMascota;
+    }
+
+    public void setNombreMascota(String nombreMascota) {
+        this.nombreMascota = nombreMascota;
+    }
+
+    public Long getVeterinarioId() {
+        return veterinarioId;
+    }
+
+    public void setVeterinarioId(Long veterinarioId) {
+        this.veterinarioId = veterinarioId;
+    }
+
+    public String getNombreVeterinario() {
+        return nombreVeterinario;
+    }
+
+    public void setNombreVeterinario(String nombreVeterinario) {
+        this.nombreVeterinario = nombreVeterinario;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }

@@ -3,12 +3,12 @@ server:
 
 spring:
   application:
-    name: auth-service
+    name: users-pets-service
 
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/db_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-    username: ${DATABASE_USERNAME:root}
-    password: ${DATABASE_PASSWORD:_odmon5Am}
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/db_auth_in5am?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: IN5AM
+    password: _odmon5Am
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
