@@ -3,7 +3,6 @@ package com.jesussanchez.veterinaria.config;
 import com.jesussanchez.veterinaria.entity.Rol;
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
 import com.jesussanchez.veterinaria.service.UsuarioService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class AdminSeeder implements ApplicationRunner {
 
     private final UsuarioService usuarioService;
@@ -26,6 +24,11 @@ public class AdminSeeder implements ApplicationRunner {
 
     @Value("${app.admin.password:admin123}")
     private String password;
+
+    public AdminSeeder(UsuarioService usuarioService, UsuarioRepository repository) {
+        this.usuarioService = usuarioService;
+        this.repository = repository;
+    }
 
     @Override
     public void run(ApplicationArguments args) {

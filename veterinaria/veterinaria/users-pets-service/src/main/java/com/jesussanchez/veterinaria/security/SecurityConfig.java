@@ -2,6 +2,7 @@ package com.jesussanchez.veterinaria.security;
 
 import com.jesussanchez.veterinaria.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

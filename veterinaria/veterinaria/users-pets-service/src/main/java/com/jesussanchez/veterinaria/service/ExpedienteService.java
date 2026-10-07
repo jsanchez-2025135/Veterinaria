@@ -1,34 +1,49 @@
 package com.jesussanchez.veterinaria.service;
 
-import com.jesussanchez.expediente.client.CitaClient;
-import com.jesussanchez.expediente.entity.ExpedienteClinico;
-import com.jesussanchez.expediente.repository.ExpedienteRepository;
+import com.jesussanchez.veterinaria.entity.CitaMedica;
+import com.jesussanchez.veterinaria.entity.ExpedienteClinico;
+import com.jesussanchez.veterinaria.exception.ApiException;
+import com.jesussanchez.veterinaria.repository.CitaRepository;
+import com.jesussanchez.veterinaria.repository.ExpedienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ExpedienteService {
 
     private final ExpedienteRepository expedienteRepository;
-    private final CitaClient citaClient;
+    private final CitaRepository citaRepository;
 
     @Transactional
-    public ExpedienteClinico crearExpediente(ExpedienteClinico expediente) {
-        // Validar que no exista expediente para esta cita
-        if (expedienteRepository.existsByCitaId(expediente.getCitaId())) {
-            throw new RuntimeException("La cita ya posee un expediente clínico registrado.");
+    public ExpedienteClinico registrarExpediente(Long citaId, String diagnostico, String tratamiento, Double pesoKg) {
+        CitaMedica cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new ApiException("Cita médica no encontrada", HttpStatus.NOT_FOUND));
+
+        if (cita.getEstado() == CitaMedica.EstadoCita.CANCELADA) {
+            throw new ApiException("No se puede registrar un expediente para una cita cancelada", HttpStatus.BAD_REQUEST);
         }
 
+        // Cambiar el estado de la cita a COMPLETADA
+        cita.setEstado(CitaMedica.EstadoCita.COMPLETADA);
+        citaRepository.save(cita);
+
+        ExpedienteClinico expediente = new ExpedienteClinico();
+        expediente.setCita(cita);
+        expediente.setDiagnostico(diagnostico);
+        expediente.setTratamiento(tratamiento);
+        expediente.setPesoKg(pesoKg);
         expediente.setFechaRegistro(LocalDateTime.now());
-        ExpedienteClinico guardado = expedienteRepository.save(expediente);
 
-        // Regla 8.4: Notificar a cita-service para actualizar estado a COMPLETADA
-        citaClient.actualizarEstadoCita(expediente.getCitaId(), "COMPLETADA");
+        return expedienteRepository.save(expediente);
+    }
 
-        return guardado;
+    public List<ExpedienteClinico> obtenerHistorialPorMascota(Long mascotaId) {
+        return expedienteRepository.findByCitaMascotaId(mascotaId);
     }
 }

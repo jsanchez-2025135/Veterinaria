@@ -2,7 +2,6 @@ package com.jesussanchez.veterinaria.exception;
 
 import com.jesussanchez.veterinaria.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jdk.internal.org.jline.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
