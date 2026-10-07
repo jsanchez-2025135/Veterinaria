@@ -2,8 +2,8 @@ package com.jesussanchez.veterinaria.exception;
 
 import com.jesussanchez.veterinaria.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jdk.internal.org.jline.utils.Log;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // Declaración manual del Logger para solucionar el error de compilación
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApi(ApiException ex, HttpServletRequest req) {
@@ -45,7 +47,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest req) {
-        Log.error("Error inesperado", ex);
+        log.error("Error inesperado", ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor.", req);
     }
 

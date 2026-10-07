@@ -14,7 +14,7 @@ public class MascotaResponse {
 
     private Long id;
     private String nombre;
-    private Especie especie;
+    private String especie;
     private String raza;
     private Integer edad;
     private Long clienteId;

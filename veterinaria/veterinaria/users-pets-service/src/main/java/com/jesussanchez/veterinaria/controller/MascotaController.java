@@ -4,7 +4,6 @@ import com.jesussanchez.veterinaria.request.MascotaRequest;
 import com.jesussanchez.veterinaria.response.MascotaResponse;
 import com.jesussanchez.veterinaria.service.MascotaService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/mascotas")
-@RequiredArgsConstructor
 public class MascotaController {
 
     private final MascotaService mascotaService;
@@ -23,6 +21,7 @@ public class MascotaController {
     public MascotaController(MascotaService mascotaService) {
         this.mascotaService = mascotaService;
     }
+
 
     // CLIENTE: Ver sus propias mascotas
     @GetMapping("/mis-mascotas")
